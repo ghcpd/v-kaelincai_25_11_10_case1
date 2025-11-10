@@ -1,0 +1,9 @@
+{
+  "description": "Canonical test data used for both projects",
+  "cases": [
+    {"id": "baseline_focus_typing_no_dropdown"},
+    {"id": "baseline_enter_triggers_search"},
+    {"id": "history_show_on_focus"},
+    {"id": "dedupe_and_order"}
+  ]
+}
