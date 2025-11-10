@@ -1,0 +1,487 @@
+CCJJLL630: Role
+You are a software engineer responsible for implementing and testing the capabilities of AI models on the New feature subtype within the Feature & improvement category.
+Your task is to provide two separate, complete Python projects (before / after) that implement a Search History Dropdown feature for an application search bar, exercise edge cases and optimizations, include automated tests, and run reproducibly with one command per project.
+________________________________________
+Title
+Evaluation of Prime, Secondary, haiku, and gpt-5-mini on Feature & improvement — New Feature: Search History Dropdown
+________________________________________
+Description
+This experiment evaluates AI models’ ability to design, implement and validate a small but UX-critical feature: a Search History Dropdown for an application search bar. The current search triggers only on Enter. The new feature must display the 5 most recent searches when the input is focused or as the user types, support click-to-repeat search, support keyboard navigation, persist history across sessions, and handle privacy/edge cases (clear history, opt-out). The goal is to deliver two projects:
+• Project A — Pre-Feature (Baseline): search bar without history dropdown (Enter-only).
+• Project B — Post-Feature (Enhanced): search bar with Search History Dropdown, keyboard navigation, persistence, privacy controls, and robust input handling.
+Key evaluation criteria
+• Correctness of feature behavior (display, selection, persistence).
+• UX: keyboard & mouse interactions, accessibility (ARIA), responsiveness.
+• Robustness: malformed inputs, non-string history items, large history, concurrency.
+• Performance: minimal latency, efficient storage/lookup.
+• Test coverage: unit and end-to-end tests, including edge cases.
+• Reproducibility: environment scripts and one-command execution for full test runs.
+• Quantitative metrics: correctness rate, keyboard navigation success, latency, persistence checks.
+________________________________________
+Requirements for the AI Model Output
+1.	Test Scenario & Description
+o	Describe the scenario and ability being tested: show and use the 5 most recent searches when the user focuses or types in the search field; clicking a history item triggers the same search; Up/Down + Enter navigates/selects items; Esc closes dropdown.
+o	Specify expected input/output formats for automated tests (JSON or Python dict). Example: {"action":"focus","expected_dropdown": true, "expected_items":["x","y","z"]}.
+o	Acceptance criteria: dropdown appears on focus/typing, shows up to 5 recent entries in correct (most-recent-first) order, clicking or selecting with keyboard triggers the same search request payload, history persists across page reloads, and privacy controls (clear, opt-out) work.
+2.	Test Data Generation
+o	Produce at least 5 structured test cases saved as test_data.json, covering:
+• Normal case — user with empty history, performs searches, dropdown shows entries.
+• Repeated-search case — duplicate entries, ensure ordering and deduplication policy.
+• Malformed inputs — history contains non-string entries, extremely long strings, or control characters.
+• Persistence case — history persists across simulated reloads and sessions; opt-out disables persistence.
+• Accessibility & keyboard case — keyboard navigation (Up/Down/Enter/Esc), screen-reader attributes.
+o	Each case must include: test id, initial state, user actions, expected dropdown contents/state, and pass/fail rules.
+3.	Reproducible Environment
+o	Provide requirements.txt and setup.sh (or Dockerfile) to create a consistent environment. Include test runner dependencies (pytest, Playwright or Selenium) and any small local storage shim.
+o	Document how to start the baseline (Project A) and enhanced (Project B) demo apps, how to configure persistence location (in-memory vs local file), and how to run tests.
+4.	Test Code
+o	Generate executable Python test code that:
+a. Starts the demo app and a lightweight HTTP server if required.
+b. Uses headless browser automation (Playwright/Selenium) to simulate focus, typing, clicks, keyboard navigation, and page reloads.
+c. Captures outputs: DOM state, emitted search requests (payloads), local storage contents, and console logs.
+d. Compares actual outputs to expected results from test_data.json.
+e. Reports per-test pass/fail and computes metrics: correctness_rate, keyboard_navigation_success, persistence_success_rate, and latency for dropdown display.
+o	Tests must be runnable via run_tests.sh and accept a repeat parameter for stability checks.
+5.	Execution Scripts
+o	Provide run_tests.sh in each project to set up the environment (venv or Docker), start the demo server, run all tests, collect artifacts (screenshots, logs, results JSON), and gracefully stop servers.
+o	Provide root-level run_all.sh that runs Project A then Project B tests, aggregates results_pre.json and results_post.json, and generates compare_report.md. One command should run the full workflow end-to-end.
+6.	Expected Output
+o	For every test case produce reference outputs (example JSON): expected dropdown presence, expected item list and order, expected search payload on selection, expected storage contents after actions.
+o	Generate results_pre.json and results_post.json with per-test assertions, pass/fail, measured latencies (time-to-dropdown), and persistence verification.
+o	Produce compare_report.md summarizing: feature correctness delta, keyboard navigation success rates, persistence behavior, and any regressions or remaining issues.
+7.	Documentation / Explanation
+o	Provide README.md explaining how to set up environments, run individual project tests, run the full experiment, and locate artifacts.
+o	For each test case explain what it validates and why it matters (usability, privacy, accessibility).
+o	Highlight pitfalls and failure modes (race conditions writing history concurrently, injection/malicious history entries, storage quota limits, cross-origin storage issues).
+o	State limitations of the test harness (headless vs real-device differences) and recommend rollout steps (feature flag, gradual exposure, telemetry to monitor real users).
+________________________________________
+Deliverables (All files must be saved locally and organized into two project folders plus shared artifacts)
+Project A – Pre-Feature (Baseline Search) — folder name: Project_A_Baseline_Search
+• src/ — simple demo app implementing a search bar that triggers on Enter only (e.g., index.html, minimal app.js to send search requests).
+• server/ — lightweight static/demo server (server.py or serve.sh).
+• data/ — test_data.json (≥5 test cases) and sample fixtures.
+• tests/ — automated tests for the baseline (test_pre_feature.py).
+• logs/ — log_pre.txt and captured request traces.
+• results/ — results_pre.json.
+• requirements.txt, setup.sh, run_tests.sh.
+Project B – Post-Feature (Search History Dropdown) — folder name: Project_B_SearchHistory
+• src/ — enhanced demo app with Search History Dropdown, keyboard support, persistence and privacy controls (index.html, search_history.js, styles.css).
+• server/ — static/demo server.
+• data/ — test_data.json and expected_post.json.
+• tests/ — automated tests for the enhanced feature (test_post_feature.py).
+• logs/ — log_post.txt and request traces.
+• results/ — results_post.json.
+• requirements.txt, setup.sh, run_tests.sh.
+Shared Artifacts (repo root)
+• test_data.json — canonical test vectors used by both projects.
+• run_all.sh — master script to run Project A then Project B tests and aggregate results.
+• compare_report.md — final comparison report: per-test diffs, success rates, latency metrics, and recommendations.
+• results/ — aggregated results_pre.json, results_post.json, and aggregated_metrics.json.
+• README.md — instructions, limitations, and rollout suggestions.
+________________________________________
+Goal
+Deliver two fully reproducible project folders demonstrating the addition of a Search History Dropdown feature and its verification. Provide automated end-to-end tests, reproducible environments, quantitative metrics (correctness, keyboard navigation success, persistence), logs, and a final comparison report to support safe rollout and monitoring.
+
+
+GitHub Copilot: I'll prepare a todo list and then create both project folders with files: demos, servers, tests, data, scripts, and shared artifacts. Next I'll add automated tests and environment scripts. Then I'll run a quick repository check.
+
+Created 4 todos
+
+I'll create the baseline project files (Project_A_Baseline_Search) first: static app, server, tests, and scripts. Then I'll add Project_B_SearchHistory with the feature implementation and tests, plus shared artifacts. Expect a short progress update after this batch.
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/src)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/server)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/tests)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/data)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/logs)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/src/index.html)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/src/styles.css)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/src/app.js)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/server/server.py)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/data/test_data.json)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/tests/test_pre_feature.py)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/requirements.txt)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/setup.sh)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/run_tests.sh)
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/logs/log_pre.txt)
+
+Now I'll create Project_B files: demo app with dropdown, server, tests, and scripts.
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/src)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/server)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/tests)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/data)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/logs)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/src/index.html)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/src/styles.css)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/src/search_history.js)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/server/server.py)
+
+I'll patch the server to avoid potential None concatenation by using f-strings.
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/data/test_data.json)
+
+Made changes.
+
+
+GitHub Copilot: I'll fix the malformed JSON in Project_B test data, add tests for Project B covering the required behaviors, create root-level shared artifacts (canonical test_data.json, run_all.sh, compare_report.md, README), and update todos.
+
+Starting (2/4) *Create Project B enhanced feature files*
+
+Using "Apply Patch"
+
+
+```
+
+```
+Next I'll open the Project_B test JSON to patch correctly.
+
+Read [](file:///c/chatWorkspace/Project_B_SearchHistory/data/test_data.json)
+
+I'm going to: 1) fix Project_B test_data.json (replace broken long string), 2) add the Project_B tests & environment files, and 3) add shared root artifacts (root test_data.json, run_all.sh, compare script, README). Expected outcome: both projects have full test harnesses and the run_all script aggregates results.
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Read [](file:///c/chatWorkspace/Project_B_SearchHistory/data/test_data.json)
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Read [](file:///c/chatWorkspace/Project_B_SearchHistory/data/test_data.json)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/tests/test_post_feature.py)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/requirements.txt)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/setup.sh)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/run_tests.sh)
+
+Created [](file:///c/chatWorkspace/test_data.json)
+
+Created [](file:///c/chatWorkspace/run_all.sh)
+
+Created [](file:///c/chatWorkspace/compare_report.py)
+
+Created [](file:///c/chatWorkspace/README.md)
+
+Created [](file:///c/chatWorkspace/results)
+
+Created [](file:///c/chatWorkspace/results/placeholder.txt)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/logs/log_post.txt)
+
+Completed (2/4) *Create Project B enhanced feature files*
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/data/expected_post.json)
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Read [](file:///c/chatWorkspace/Project_B_SearchHistory/tests/test_post_feature.py)
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Read [](file:///c/chatWorkspace/compare_report.py)
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Read [](file:///c/chatWorkspace/compare_report.py)
+
+Created [](file:///c/chatWorkspace/docs/test_scenarios.md)
+
+Read [](file:///c/chatWorkspace/Project_A_Baseline_Search/tests/test_pre_feature.py)
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Created [](file:///c/chatWorkspace/Project_A_Baseline_Search/run_tests.ps1)
+
+Created [](file:///c/chatWorkspace/Project_B_SearchHistory/run_tests.ps1)
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Created [](file:///c/chatWorkspace/compare_report.md)
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Using "Apply Patch"
+
+Read [](file:///c/chatWorkspace/docs/test_scenarios.md)
+
+Using "Apply Patch"
+
+
+```
+
+```
+Progress update — what I did next
+- Fixed the malformed test JSON in Project B and finished implementing the Search History Dropdown feature and behavior.
+- Added Playwright-based end-to-end tests for both projects and metrics capture (keyboard, latency, persistence).
+- Added packaging and reproducibility scripts (setup.sh, run_tests.sh, run_tests.ps1) and a top-level orchestrator (run_all.sh + compare_report.py).
+- Completed docs/test vectors and added a short test scenarios doc with pitfalls and acceptance criteria.
+
+What's next (if you want)
+- I can run the tests here if you give me permission to execute shell commands in your environment.
+- If you prefer Docker-based reproducibility instead of local venvs, I can add Dockerfiles for both projects.
+
+What I created (short summary with where to find things)
+- Project_A_Baseline_Search (baseline Enter-only search)
+  - `src/index.html`, `src/app.js` (Enter-only search)
+  - `server/server.py` (Flask server logs requests into `logs/log_pre.txt`)
+  - test_data.json (3 baseline test cases)
+  - test_pre_feature.py (Playwright automation—focus, Enter behavior)
+  - `requirements.txt`, `setup.sh`, `run_tests.sh`, `run_tests.ps1`
+  - `logs/log_pre.txt`, `results/results_pre.json` will be generated by tests
+- Project_B_SearchHistory (enhanced with dropdown + persistence + privacy)
+  - `src/index.html`, `src/search_history.js` (dropdown, dedupe, keyboard navigation, persistence & opt-out, clear)
+  - `src/styles.css` (dropdown & a11y)
+  - `server/server.py` (Flask server logs into `logs/log_post.txt`)
+  - test_data.json (≥ 6 test cases including duplicates, malformed entries, persistence, keyboard, clear history, opt-out)
+  - `data/expected_post.json` (simple expected outputs)
+  - test_post_feature.py (Playwright end-to-end tests; validates dropdown, selection, keyboard navigation, persistence & opt-out, accessibility)
+  - `requirements.txt`, `setup.sh`, `run_tests.sh`, `run_tests.ps1`
+  - `logs/log_post.txt`, `results/results_post.json` and `results/metrics_post.json`
+- Root / Shared artifacts:
+  - test_data.json — canonical test vectors summary
+  - `run_all.sh` — runs both projects' setup and tests, aggregates results (bash)
+  - compare_report.py and `compare_report.md` — compares results_post/pre and writes a readable report
+  - `README.md` — how to set up, run tests, what to expect
+  - test_scenarios.md — test scenario descriptions, acceptance criteria, pitfalls and failure modes
+  - `results/aggregated_metrics.json` will be created by `run_all.sh`.
+
+Tests & Test Cases (brief)
+- All test cases are saved under each project:
+  - Baseline (Project_A) test_data.json: tests that focusing/typing doesn’t open a dropdown and pressing Enter triggers the search payload.
+  - Enhanced (Project_B) test_data.json: includes cases:
+    - show 5 most recent on focus,
+    - dedupe & ordering on repeated searches,
+    - malformed entries (non-strings, long strings) — UI parses/deduplicates safely,
+    - persistence across reloads — default on,
+    - opt-out persistence — toggling opt-out disables persistence,
+    - keyboard navigation (Up/Down + Enter) and Esc close,
+    - clear history button clears storage and dropdown.
+- Test format: JSON with "id", "initial_state", "actions" (focus/type/enter/reload/key/click), and "expected" expectations like dropdown presence, items array, search payload, persistence, aria selections, etc.
+- Quantitative metrics generated by test_post_feature.py:
+  - correctness_rate, keyboard_navigation_success, persistence_success_rate, avg_time_to_dropdown (time between focus and dropdown opening).
+
+How to run (one command per project or aggregate)
+- On Windows PowerShell:
+  - Setup and run baseline tests
+    - cd Project_A_Baseline_Search
+    - .\setup.sh
+    - .\run_tests.ps1 [repeatCount]
+  - Setup and run enhanced tests
+    - cd Project_B_SearchHistory
+    - .\setup.sh
+    - .\run_tests.ps1 [repeatCount]
+  - Aggregation after both:
+    - cd repo_root ; python compare_report.py
+- Or (bash / WSL):
+  - cd repo_root ; ./run_all.sh
+    - This runs both projects' setup/test and writes `compare_report.md` and aggregated JSON in `results/`.
+
+Outputs and evidence produced
+- Per project:
+  - `results/results_pre.json` — baseline per-case results
+  - `results/results_post.json` — post-feature per-case results and test-specific fields (latency, pass/fail, notes)
+  - `results/metrics_post.json` — numeric metrics for the enhanced project
+- Root:
+  - `results/aggregated_metrics.json` — combined JSON of pre/post results
+  - `compare_report.md` — human-readable comparison and metrics
+- Logs:
+  - `Project_A_Baseline_Search/logs/log_pre.txt`
+  - `Project_B_SearchHistory/logs/log_post.txt`
+
+Design choices and short justification
+- LocalStorage for persistence: safe/sufficient for single-origin client-only demo; tests assert key presence; the opt-out checkbox toggles `search_history_opt_out` preventing writes.
+- Deduplication policy: on save, the item moves to the front and duplicates removed — this is intuitive and prioritizes recency (used in tests).
+- UI: Shows up to 5 recent items — quick to scan and is what the tests check for.
+- Accessibility: ARIA attributes `role=listbox` and `role=option` plus `aria-selected` set when navigating items. Tests verify `aria-selected` in keyboard nav test.
+- Performance: dropdown filtered with case-insensitive includes on typed input. We keep the in-memory list and only show up to 5 items to keep latency negligible in the demo.
+- Robustness: code filters out non-string history entries, handles parse exceptions, caps the saved history to 100 items. Tests verify malformed inputs don’t crash.
+
+Automated test limitations and caveats (one small list)
+- Headless environment vs real device: headless semantics can differ (some key events or focus differences); manual QA with a real device/browser is recommended for final release.
+- LocalStorage is per-origin; tests simulate reload but do not test cross-tab race conditions.
+- Playwright version differences may require `playwright install` after environment setup.
+- Large-scale usage may require server-based history storage & robust back-end checks; the demo covers client behavior.
+
+Files created and changed (quick list)
+- Project_A_Baseline_Search/
+  - src/index.html, src/app.js, src/styles.css
+  - server/server.py
+  - test_pre_feature.py
+  - test_data.json
+  - logs/log_pre.txt
+  - run_tests.sh, run_tests.ps1, setup.sh
+- Project_B_SearchHistory/
+  - src/index.html, src/search_history.js, src/styles.css
+  - server/server.py
+  - test_post_feature.py
+  - data/test_data.json, expected_post.json
+  - logs/log_post.txt
+  - run_tests.sh, run_tests.ps1, setup.sh
+- root:
+  - test_data.json (canonical vector list)
+  - run_all.sh
+  - compare_report.py
+  - compare_report.md
+  - test_scenarios.md
+  - README.md
+  - results/ placeholder
+
+If you want the next step I’ll take automatically
+- Run the full test run locally here — I can execute run_all.sh and report results and any failing test plus captured artifacts (screenshots/requests/console logs). (I need permission to run shell commands in your environment.)
+- Or I can convert the setup to Dockerfiles for 1-command reproducibility across OS, if this is helpful.
+
+If you'd like any additional test cases added (e.g., concurrency test across multiple tabs, server-side sync), say which ones and I'll extend the harness.
+
+Made changes.
