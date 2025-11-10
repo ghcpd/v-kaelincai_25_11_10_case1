@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project B - Enhanced Search with History Dropdown</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 0;
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 10px;
+        }
+
+        .feature-status {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .search-section {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .search-header label {
+            font-weight: 600;
+            color: #555;
+            margin: 0;
+        }
+
+        .privacy-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-size: 13px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        #search_input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        #search_input:focus {
+            outline: none;
+            border-color: #28a745;
+            background: #f9fdf9;
+        }
+
+        #history_dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #history_dropdown.visible {
+            display: block;
+        }
+
+        .history-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.15s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-item:hover,
+        .history-item.highlighted {
+            background-color: #e8f5e9;
+        }
+
+        .history-empty {
+            padding: 10px 12px;
+            color: #999;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .dropdown-actions {
+            padding: 10px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .dropdown-actions button {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-actions button:hover {
+            background-color: #f5f5f5;
+        }
+
+        .dropdown-actions button.clear {
+            color: #d32f2f;
+        }
+
+        .info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff8e1;
+            border-left: 4px solid #ffa500;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .results-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .results-section h3 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .result-item {
+            background: white;
+            padding: 10px;
+            margin: 8px 0;
+            border-left: 4px solid #28a745;
+            border-radius: 2px;
+        }
+
+        .result-item .label {
+            font-weight: 600;
+            color: #28a745;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .result-item .value {
+            color: #333;
+            word-break: break-all;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "Courier New", monospace;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Project B: Enhanced Search with History Dropdown</h1>
+        <div class="feature-status">
+            <strong>Feature Status:</strong> Search History Dropdown with Keyboard Navigation & Privacy Controls
+        </div>
+
+        <div class="search-section">
+            <div class="search-header">
+                <label for="search_input">Search (Enter, Arrow Keys, or Click History):</label>
+                <div class="privacy-controls">
+                    <div class="checkbox-group">
+                        <input 
+                            id="opt_out_toggle" 
+                            type="checkbox" 
+                            aria-label="Disable search history persistence"
+                        >
+                        <label for="opt_out_toggle">Disable History</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-wrapper">
+                <input 
+                    id="search_input" 
+                    type="text" 
+                    placeholder="Type to search or focus for recent history..."
+                    aria-label="Search input field with history dropdown"
+                    aria-describedby="search-help"
+                    aria-expanded="false"
+                    aria-owns="history_dropdown"
+                >
+                <ul 
+                    id="history_dropdown" 
+                    role="listbox"
+                    aria-label="Search history"
+                    aria-hidden="true"
+                >
+                    <!-- History items will be inserted here -->
+                </ul>
+            </div>
+
+            <div class="info" id="search-help">
+                💡 <strong>Usage:</strong> Type to search or focus field to see history (5 most recent). 
+                Use <code>↑↓</code> to navigate, <code>Enter</code> to select, <code>Esc</code> to close.
+                Click history items to repeat searches. Use <em>Disable History</em> to opt-out of persistence.
+            </div>
+        </div>
+
+        <div class="success-message" id="success_message"></div>
+
+        <div class="results-section">
+            <h3>Search Results</h3>
+            <div id="results">
+                <p style="color: #999;">No searches performed yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="search_history.js"></script>
+</body>
+</html>

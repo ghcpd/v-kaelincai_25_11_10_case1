@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enhanced Search with History</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Search History Demo</h1>
+    <label class="sr-only" for="searchInput">Search</label>
+    <div class="search-wrapper">
+      <input id="searchInput" aria-label="Search" aria-autocomplete="list" aria-controls="historyDropdown" autocomplete="off" placeholder="Search or press Enter"/>
+      <div id="historyDropdown" class="dropdown" role="listbox" aria-labelledby="searchInput" hidden></div>
+    </div>
+    <div class="controls">
+      <label><input id="optOut" type="checkbox"> Opt-out of persistence</label>
+      <button id="clearHistory">Clear History</button>
+    </div>
+    <div id="results"></div>
+  </div>
+  <script src="/static/search_history.js"></script>
+</body>
+</html>
