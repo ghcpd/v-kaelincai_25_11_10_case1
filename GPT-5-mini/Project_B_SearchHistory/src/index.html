@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Search with History</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="search_history.js"></script>
+</head>
+<body>
+  <h1>Search with History Dropdown</h1>
+  <div class="search-wrapper">
+    <input id="search" aria-label="Search" aria-autocomplete="list" aria-controls="history-list" aria-expanded="false" placeholder="Type or press ArrowDown to open history" />
+    <div id="history" role="listbox" aria-hidden="true" tabindex="-1"></div>
+  </div>
+  <div class="controls">
+    <button id="clear">Clear History</button>
+    <label><input type="checkbox" id="optout" /> Disable persistence</label>
+  </div>
+  <div id="results" role="status" aria-live="polite"></div>
+</body>
+</html>

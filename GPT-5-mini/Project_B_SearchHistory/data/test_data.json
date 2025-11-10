@@ -1,0 +1,37 @@
+[
+  {
+    "id": "normal-1",
+    "description": "Empty history, perform searches, dropdown shows entries on focus/typing",
+    "initial_state": {"storage": []},
+    "actions": [{"action":"type","value":"orange"},{"action":"key","value":"Enter"},{"action":"focus"}],
+    "expected": {"dropdown": true, "items": ["orange"]}
+  },
+  {
+    "id": "dup-1",
+    "description": "Repeated searches deduplicated and most-recent-first",
+    "initial_state": {"storage": ["apple","banana"]},
+    "actions": [{"action":"type","value":"apple"},{"action":"key","value":"Enter"},{"action":"focus"}],
+    "expected": {"dropdown": true, "items": ["apple","banana"]}
+  },
+  {
+    "id": "malformed-1",
+    "description": "Malformed non-string entries ignored",
+    "initial_state": {"storage": ["good", 123, null, "bad\u0000"]},
+    "actions": [{"action":"focus"}],
+    "expected": {"dropdown": true, "items": ["good","bad\u0000"]}
+  },
+  {
+    "id": "persistence-1",
+    "description": "History persists across reloads unless opt-out",
+    "initial_state": {"storage": ["keep"]},
+    "actions": [{"action":"reload"}],
+    "expected": {"dropdown": true, "items": ["keep"]}
+  },
+  {
+    "id": "keyboard-1",
+    "description": "Keyboard navigation Up/Down + Enter selects item, Esc closes",
+    "initial_state": {"storage": ["one","two","three"]},
+    "actions": [{"action":"focus"},{"action":"key","value":"ArrowDown"},{"action":"key","value":"ArrowDown"},{"action":"key","value":"Enter"}],
+    "expected": {"dropdown": false, "last_search": {"query":"two"}}
+  }
+]
