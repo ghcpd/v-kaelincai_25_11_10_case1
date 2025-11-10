@@ -1,5 +1,0 @@
-{
-  "history_show_on_focus": {"dropdown": true, "items": ["f","e","d","c","b"]},
-  "dedupe_and_order": {"items_first": "y"},
-  "keyboard_navigation": {"search_payload": "beta"}
-}

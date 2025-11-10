@@ -1,9 +1,0 @@
-body { font-family: system-ui, Arial, sans-serif; padding: 24px; }
-.container { width: 540px; margin: 0 auto; }
-.search-wrapper { position: relative; }
-#historyDropdown { position: absolute; left: 0; right: 0; background: white; border: 1px solid #ddd; max-height: 240px; overflow: auto; z-index: 20; }
-.dropdown-item { padding: 8px 12px; cursor: pointer; }
-.dropdown-item.active { background: #f0f0f0; }
-.controls { margin-top: 10px; }
-#results { margin-top: 12px; color: #444; }
-.sr-only { position: absolute; left: -9999px; }
