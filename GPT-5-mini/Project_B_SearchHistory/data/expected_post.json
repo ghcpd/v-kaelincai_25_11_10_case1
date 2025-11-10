@@ -1,0 +1,7 @@
+{
+  "normal-1": { "dropdown": true, "items": ["orange"] },
+  "dup-1": { "dropdown": true, "items": ["apple","banana"] },
+  "malformed-1": { "dropdown": true, "items": ["good","bad\u0000"] },
+  "persistence-1": { "dropdown": true, "items": ["keep"] },
+  "keyboard-1": { "dropdown": false, "last_search": {"query":"two"} }
+}

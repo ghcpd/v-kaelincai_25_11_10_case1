@@ -1,0 +1,7 @@
+body { font-family: Arial, sans-serif; margin: 2rem; }
+.search-wrapper { position: relative; width: 320px; }
+#search { width: 100%; padding: 8px; box-sizing: border-box; }
+#history { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ccc; display: none; max-height: 200px; overflow: auto; z-index: 10; }
+.history-item { padding: 8px; cursor: pointer; }
+.history-item.focused { background: #0078d4; color: white; }
+.controls { margin-top: 1rem; }
