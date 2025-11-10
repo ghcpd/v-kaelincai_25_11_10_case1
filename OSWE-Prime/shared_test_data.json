@@ -1,0 +1,53 @@
+[
+  {
+    "id": "normal_case",
+    "description": "Empty history; add 3 searches; expect MRU order in dropdown",
+    "initial_state": { "history": [] },
+    "actions": [
+      { "action": "type", "value": "apple" },
+      { "action": "enter" },
+      { "action": "type", "value": "banana" },
+      { "action": "enter" },
+      { "action": "type", "value": "cherry" },
+      { "action": "enter" },
+      { "action": "focus" }
+    ],
+    "expected": { "dropdown_present": true, "items": ["cherry","banana","apple"], "persisted": true }
+  },
+  {
+    "id": "duplicates_case",
+    "description": "Duplicate entries should re-order to most-recent-first and dedupe older ones",
+    "initial_state": { "history": [] },
+    "actions": [
+      { "action": "type", "value": "apple" }, { "action": "enter" },
+      { "action": "type", "value": "banana" }, { "action": "enter" },
+      { "action": "type", "value": "apple" }, { "action": "enter" },
+      { "action": "focus" }
+    ],
+    "expected": { "dropdown_present": true, "items": ["apple","banana"], "persisted": true }
+  },
+  {
+    "id": "malformed_inputs",
+    "description": "History contains non-strings; dropdown filters non-strings and keeps long strings intact",
+    "initial_state": { "history": ["short", 123, null, "control\nchars\t\r", "longstring"] },
+    "actions": [ { "action": "focus" } ],
+    "expected": { "dropdown_present": true, "items": ["short","control\nchars\t\r","longstring"], "persisted": true }
+  },
+  {
+    "id": "persistence_opt_out",
+    "description": "Opt-out should prevent saving to localStorage across reloads",
+    "initial_state": { "history": [] },
+    "actions": [
+      { "action": "type", "value": "session-only" }, { "action": "enter" },
+      { "action": "toggle_persistence", "value": false }, { "action": "reload" }, { "action": "focus" }
+    ],
+    "expected": { "dropdown_present": false, "persisted": false }
+  },
+  {
+    "id": "keyboard_navigation",
+    "description": "Keyboard navigation should let user use ArrowDown/Up + Enter to select, and Esc to close",
+    "initial_state": { "history": ["a","b","c","d","e","f"] },
+    "actions": [ { "action": "focus" }, { "action": "key", "value": "ArrowDown" }, { "action": "key", "value": "ArrowDown" }, { "action": "key", "value": "Enter" } ],
+    "expected": { "dropdown_present": true, "selected": "b", "persisted": true }
+  }
+]
