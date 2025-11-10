@@ -1,0 +1,5 @@
+{
+  "normal_case": { "items": ["cherry","banana","apple"] },
+  "duplicates_case": { "items": ["apple","banana"] },
+  "malformed_inputs": { "items": ["short","control\nchars\t\r","longstring"] }
+}
