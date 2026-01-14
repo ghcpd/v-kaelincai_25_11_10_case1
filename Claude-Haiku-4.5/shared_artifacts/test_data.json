@@ -1,0 +1,563 @@
+{
+  "test_cases": [
+    {
+      "id": "TC_001_empty_history",
+      "title": "Empty History - Normal Case",
+      "description": "User with no prior searches focuses input field; dropdown should be hidden or show empty state",
+      "category": "normal",
+      "initial_state": {
+        "history": [],
+        "persistence_enabled": true,
+        "opt_out": false
+      },
+      "user_actions": [
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        }
+      ],
+      "expected_output": {
+        "dropdown_visible": false,
+        "dropdown_items": [],
+        "search_triggered": false,
+        "storage_state": []
+      },
+      "acceptance_criteria": {
+        "dropdown_hidden_on_empty": true,
+        "no_search_on_focus": true
+      }
+    },
+    {
+      "id": "TC_002_normal_history_display",
+      "title": "Normal Case - History Display on Focus",
+      "description": "User with 5 prior searches focuses input; dropdown displays up to 5 items in most-recent-first order",
+      "category": "normal",
+      "initial_state": {
+        "history": [
+          "python tutorial",
+          "javascript async",
+          "database optimization",
+          "rest api design",
+          "css grid layout"
+        ],
+        "persistence_enabled": true,
+        "opt_out": false
+      },
+      "user_actions": [
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        }
+      ],
+      "expected_output": {
+        "dropdown_visible": true,
+        "dropdown_items": [
+          "css grid layout",
+          "rest api design",
+          "database optimization",
+          "javascript async",
+          "python tutorial"
+        ],
+        "items_count": 5,
+        "search_triggered": false,
+        "storage_state": [
+          "python tutorial",
+          "javascript async",
+          "database optimization",
+          "rest api design",
+          "css grid layout"
+        ]
+      },
+      "acceptance_criteria": {
+        "dropdown_visible_on_focus": true,
+        "max_5_items_displayed": true,
+        "most_recent_first_order": true,
+        "no_search_triggered_on_focus": true
+      }
+    },
+    {
+      "id": "TC_003_new_search_added",
+      "title": "Normal Case - New Search Added to History",
+      "description": "User types query and presses Enter; new entry added to history, persisted, and dropdown refreshed on next focus",
+      "category": "normal",
+      "initial_state": {
+        "history": [
+          "python tutorial",
+          "javascript async",
+          "database optimization",
+          "rest api design",
+          "css grid layout"
+        ],
+        "persistence_enabled": true,
+        "opt_out": false
+      },
+      "user_actions": [
+        {
+          "action": "type",
+          "target": "search_input",
+          "text": "react hooks",
+          "delay_ms": 0
+        },
+        {
+          "action": "key_press",
+          "target": "search_input",
+          "key": "Enter",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 500
+        },
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        }
+      ],
+      "expected_output": {
+        "dropdown_visible": true,
+        "dropdown_items": [
+          "react hooks",
+          "css grid layout",
+          "rest api design",
+          "database optimization",
+          "javascript async"
+        ],
+        "items_count": 5,
+        "search_triggered": true,
+        "search_payload": {
+          "query": "react hooks",
+          "method": "GET",
+          "timestamp_present": true
+        },
+        "storage_state": [
+          "python tutorial",
+          "javascript async",
+          "database optimization",
+          "rest api design",
+          "css grid layout",
+          "react hooks"
+        ]
+      },
+      "acceptance_criteria": {
+        "search_triggered_on_enter": true,
+        "new_entry_added_to_history": true,
+        "persisted_correctly": true,
+        "most_recent_displayed_first": true,
+        "max_5_shown_oldest_dropped": true
+      }
+    },
+    {
+      "id": "TC_004_duplicate_searches",
+      "title": "Repeated Search - Deduplication",
+      "description": "User searches same query twice; history should not contain duplicates or should update order with most recent",
+      "category": "repeated",
+      "initial_state": {
+        "history": [
+          "python tutorial",
+          "javascript async",
+          "database optimization"
+        ],
+        "persistence_enabled": true,
+        "opt_out": false
+      },
+      "user_actions": [
+        {
+          "action": "type",
+          "target": "search_input",
+          "text": "python tutorial",
+          "delay_ms": 0
+        },
+        {
+          "action": "key_press",
+          "target": "search_input",
+          "key": "Enter",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 500
+        },
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        }
+      ],
+      "expected_output": {
+        "dropdown_visible": true,
+        "dropdown_items": [
+          "python tutorial",
+          "database optimization",
+          "javascript async"
+        ],
+        "items_count": 3,
+        "no_duplicates": true,
+        "storage_state": [
+          "javascript async",
+          "database optimization",
+          "python tutorial"
+        ]
+      },
+      "acceptance_criteria": {
+        "no_duplicate_entries": true,
+        "repeated_search_moved_to_top": true,
+        "history_count_preserved": true
+      }
+    },
+    {
+      "id": "TC_005_keyboard_navigation",
+      "title": "Keyboard Navigation - Up/Down/Enter/Esc",
+      "description": "User navigates history dropdown with arrow keys, selects with Enter, closes with Esc",
+      "category": "keyboard",
+      "initial_state": {
+        "history": [
+          "python tutorial",
+          "javascript async",
+          "database optimization"
+        ],
+        "persistence_enabled": true,
+        "opt_out": false
+      },
+      "user_actions": [
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        },
+        {
+          "action": "key_press",
+          "target": "search_input",
+          "key": "ArrowDown",
+          "delay_ms": 100
+        },
+        {
+          "action": "key_press",
+          "target": "search_input",
+          "key": "ArrowDown",
+          "delay_ms": 100
+        },
+        {
+          "action": "key_press",
+          "target": "search_input",
+          "key": "Enter",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 500
+        }
+      ],
+      "expected_output": {
+        "dropdown_visible_initial": true,
+        "highlighted_item_index_after_arrowdown_1": 0,
+        "highlighted_item_index_after_arrowdown_2": 1,
+        "highlighted_item": "javascript async",
+        "search_triggered": true,
+        "search_payload": {
+          "query": "javascript async"
+        },
+        "keyboard_navigation_success": true
+      },
+      "acceptance_criteria": {
+        "arrow_down_navigates_forward": true,
+        "arrow_up_navigates_backward": true,
+        "enter_selects_highlighted_item": true,
+        "esc_closes_dropdown": true,
+        "focus_returns_to_input": true
+      }
+    },
+    {
+      "id": "TC_006_click_to_repeat",
+      "title": "Mouse Interaction - Click to Repeat Search",
+      "description": "User clicks a history item; same search is triggered with correct payload",
+      "category": "interaction",
+      "initial_state": {
+        "history": [
+          "python tutorial",
+          "javascript async",
+          "database optimization"
+        ],
+        "persistence_enabled": true,
+        "opt_out": false
+      },
+      "user_actions": [
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        },
+        {
+          "action": "click",
+          "target": "dropdown_item",
+          "item_index": 1,
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 500
+        }
+      ],
+      "expected_output": {
+        "dropdown_visible_initial": true,
+        "dropdown_closed_after_click": true,
+        "search_triggered": true,
+        "search_payload": {
+          "query": "javascript async"
+        },
+        "input_field_cleared_or_filled": "javascript async"
+      },
+      "acceptance_criteria": {
+        "click_triggers_search": true,
+        "dropdown_closes_after_selection": true,
+        "correct_query_sent": true
+      }
+    },
+    {
+      "id": "TC_007_persistence_across_reload",
+      "title": "Persistence - History Survives Page Reload",
+      "description": "User performs searches, reloads page, history is restored from storage",
+      "category": "persistence",
+      "initial_state": {
+        "history": [],
+        "persistence_enabled": true,
+        "opt_out": false
+      },
+      "user_actions": [
+        {
+          "action": "type",
+          "target": "search_input",
+          "text": "first search",
+          "delay_ms": 0
+        },
+        {
+          "action": "key_press",
+          "target": "search_input",
+          "key": "Enter",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 300
+        },
+        {
+          "action": "type",
+          "target": "search_input",
+          "text": "second search",
+          "delay_ms": 0
+        },
+        {
+          "action": "key_press",
+          "target": "search_input",
+          "key": "Enter",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 300
+        },
+        {
+          "action": "reload_page",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 500
+        },
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        }
+      ],
+      "expected_output": {
+        "history_before_reload": [
+          "first search",
+          "second search"
+        ],
+        "history_after_reload": [
+          "second search",
+          "first search"
+        ],
+        "dropdown_visible": true,
+        "dropdown_items": [
+          "second search",
+          "first search"
+        ],
+        "persistence_verified": true
+      },
+      "acceptance_criteria": {
+        "history_persists_across_reload": true,
+        "order_maintained": true,
+        "no_data_loss": true,
+        "storage_mechanism_working": true
+      }
+    },
+    {
+      "id": "TC_008_privacy_clear_history",
+      "title": "Privacy - Clear History Button",
+      "description": "User clicks clear history button; all history removed from storage and dropdown",
+      "category": "privacy",
+      "initial_state": {
+        "history": [
+          "python tutorial",
+          "javascript async",
+          "database optimization"
+        ],
+        "persistence_enabled": true,
+        "opt_out": false
+      },
+      "user_actions": [
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        },
+        {
+          "action": "click",
+          "target": "clear_history_button",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 300
+        },
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        }
+      ],
+      "expected_output": {
+        "history_cleared": true,
+        "dropdown_visible": false,
+        "dropdown_items": [],
+        "storage_state": [],
+        "confirmation_message": "History cleared"
+      },
+      "acceptance_criteria": {
+        "all_history_removed": true,
+        "storage_emptied": true,
+        "dropdown_empty_on_focus": true,
+        "confirmation_provided": true
+      }
+    },
+    {
+      "id": "TC_009_malformed_input_xss",
+      "title": "Robustness - Malformed Input / XSS Prevention",
+      "description": "History contains HTML/script tags, special chars; system sanitizes and displays safely without executing",
+      "category": "robustness",
+      "initial_state": {
+        "history": [
+          "<script>alert('xss')</script>",
+          "search & special chars <div>",
+          "unicode test: 你好世界",
+          "null character with control",
+          "very long string with many x characters (500+ chars)"
+        ],
+        "persistence_enabled": true,
+        "opt_out": false
+      },
+      "user_actions": [
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 200
+        }
+      ],
+      "expected_output": {
+        "dropdown_visible": true,
+        "dropdown_items_safe": [
+          "&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;",
+          "search &amp; special chars &lt;div&gt;",
+          "unicode test: 你好世界",
+          "null character with control",
+          "very long string with many x characters (500+ chars)"
+        ],
+        "no_script_execution": true,
+        "no_dom_injection": true,
+        "safe_rendering": true
+      },
+      "acceptance_criteria": {
+        "html_tags_escaped": true,
+        "no_script_execution": true,
+        "special_chars_safe": true,
+        "long_strings_handled": true,
+        "unicode_preserved": true
+      }
+    },
+    {
+      "id": "TC_010_opt_out_persistence",
+      "title": "Privacy - Opt-Out Disables Persistence",
+      "description": "User toggles opt-out flag; history not persisted to storage, cleared from memory on reload",
+      "category": "privacy",
+      "initial_state": {
+        "history": [
+          "python tutorial",
+          "javascript async"
+        ],
+        "persistence_enabled": true,
+        "opt_out": false
+      },
+      "user_actions": [
+        {
+          "action": "click",
+          "target": "opt_out_toggle",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 200
+        },
+        {
+          "action": "type",
+          "target": "search_input",
+          "text": "private search",
+          "delay_ms": 0
+        },
+        {
+          "action": "key_press",
+          "target": "search_input",
+          "key": "Enter",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 300
+        },
+        {
+          "action": "reload_page",
+          "delay_ms": 0
+        },
+        {
+          "action": "wait",
+          "delay_ms": 500
+        },
+        {
+          "action": "focus",
+          "target": "search_input",
+          "delay_ms": 0
+        }
+      ],
+      "expected_output": {
+        "persistence_disabled": true,
+        "history_not_persisted": true,
+        "dropdown_items_after_reload": [],
+        "storage_empty": true,
+        "opt_out_state_preserved": true
+      },
+      "acceptance_criteria": {
+        "opt_out_disables_persistence": true,
+        "searches_not_saved": true,
+        "history_cleared_on_reload": true,
+        "opt_out_preference_persisted": true
+      }
+    }
+  ]
+}
